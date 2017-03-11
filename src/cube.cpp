@@ -44,7 +44,7 @@ GLfloat vertices[] = {
   -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
 };
 
-void Cube::init(float x)
+void Cube::init()
 {
     //a place to store all the shader information
   glGenVertexArrays(1, &vao);
@@ -63,7 +63,7 @@ void Cube::init(float x)
   glCompileShader(vertexShader);
   glCompileShader(fragmentShader);
   
-  GLuint shaderProgram = glCreateProgram();
+  shaderProgram = glCreateProgram();
   glAttachShader(shaderProgram, vertexShader);
   glAttachShader(shaderProgram, fragmentShader);
   glBindFragDataLocation(shaderProgram, 0, "outColor");
@@ -106,16 +106,22 @@ void Cube::init(float x)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  
+}
+void Cube::draw(float x,float y,float z,float r)
+{
+  glBindBuffer(GL_ARRAY_BUFFER,vbo);
+  glBindVertexArray(vao);
+  glUseProgram(shaderProgram);
+    
   glm::mat4 model;
-  model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+  model = glm::rotate(model, glm::radians(r), glm::vec3(0.0f, 0.0f, 1.0f));
   
   GLint uniTrans = glGetUniformLocation(shaderProgram, "model");
-  model = glm::translate(model,glm::vec3(0.0f,0.0f,x));
+  model = glm::translate(model,glm::vec3(x,y,z));
     glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(model));
     
   glm::mat4 view = glm::lookAt(
-    glm::vec3(1.2f, 1.2f, 1.2f), // position
+    glm::vec3(0.0f, 2.2f, 5.2f), // position
     glm::vec3(0.0f, 0.0f, 0.0f), // camera center
     glm::vec3(0.0f, 0.0f, 1.0f) // up axis
     );
@@ -126,11 +132,7 @@ void Cube::init(float x)
   GLint uniProj = glGetUniformLocation(shaderProgram, "proj");
   glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
 
-}
-void Cube::draw()
-{
-  glBindBuffer(GL_ARRAY_BUFFER,vbo);
-  glBindVertexArray(vao);
+  
   glDrawArrays(GL_TRIANGLES, 0, 36); 
 }
 

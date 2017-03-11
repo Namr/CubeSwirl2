@@ -40,8 +40,13 @@ int main()
 
   Cube cube;
   Cube cube2;
-  cube.init(0.0f);
-  cube2.init(1.0f);
+  Cube cube3;
+  Cube cube4;
+  cube.init();
+  cube2.init();
+  cube3.init();
+  cube4.init();
+  float t = 0;
   //main loop
   while(!glfwWindowShouldClose(window))
   {
@@ -50,9 +55,11 @@ int main()
     // Clear the screen to black
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    cube.draw();
-    cube2.draw();
+    t++;
+    cube.draw(2.0f,0.0f,0.0f,t);
+    cube2.draw(0.0f,2.0f,0.0f,t);
+    cube3.draw(0.0,-2.0f,0.0f,t);
+    cube4.draw(-2.0f,0.0f,0.0f,t);
     glfwPollEvents();
   }
   

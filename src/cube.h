@@ -15,9 +15,10 @@ class Cube
 private:
   GLuint vao;
   GLuint vbo;
+  GLuint shaderProgram;
 public:
   GLuint load_shader(char *filepath, GLenum type);
-  void draw();
-  void init(float x);
+  void draw(float x,float y,float z,float r);
+  void init();
 };
 
