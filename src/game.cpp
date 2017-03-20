@@ -10,7 +10,8 @@
 #include <stdlib.h>
 
 #include "cube.h"
-
+#include "skybox.h"
+#include "Camera.h"
 using namespace std;
 
 
@@ -42,10 +43,27 @@ int main()
   Cube cube2;
   Cube cube3;
   Cube cube4;
+  Cube cube5;
+  Cube cube6;
+  Cube cube7;
+  Cube cube8;
+  Skybox sky;
+  Camera cam;
+  cam = Camera();
+  cam.view = glm::lookAt(
+    glm::vec3(1.0f, 3.2f, 5.2f), // position
+    glm::vec3(0.0f, 0.0f, 0.0f), // camera center
+    glm::vec3(0.0f, 0.0f, 1.0f) // up axis
+    );
+  sky.init();
   cube.init();
   cube2.init();
   cube3.init();
   cube4.init();
+  cube5.init();
+  cube6.init();
+  cube7.init();
+  cube8.init();
   float t = 0;
   //main loop
   while(!glfwWindowShouldClose(window))
@@ -56,10 +74,15 @@ int main()
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     t++;
-    cube.draw(2.0f,0.0f,0.0f,t);
-    cube2.draw(0.0f,2.0f,0.0f,t);
-    cube3.draw(0.0,-2.0f,0.0f,t);
-    cube4.draw(-2.0f,0.0f,0.0f,t);
+    sky.draw();
+    cube.draw(cam,2.0f,0.0f,0.0f,t);
+    cube2.draw(cam,0.0f,2.0f,0.0f,t);
+    cube3.draw(cam,0.0,-2.0f,0.0f,t);
+    cube4.draw(cam,-2.0f,0.0f,0.0f,t);
+    cube5.draw(cam,1.5f,1.5f,0.0f,t);
+    cube6.draw(cam,-1.5f,1.5f,0.0f,t);
+    cube7.draw(cam,1.5f,-1.5,0.0f,t);
+    cube8.draw(cam,-1.5f,-1.5f,0.0f,t);
     glfwPollEvents();
   }
   

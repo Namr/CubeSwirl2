@@ -94,7 +94,7 @@ void Cube::init()
 
   int width, height;
   unsigned char* image;
-
+  glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, textures);
   image = SOIL_load_image("sample2.png", &width, &height, 0, SOIL_LOAD_RGB);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
@@ -107,30 +107,26 @@ void Cube::init()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 }
-void Cube::draw(float x,float y,float z,float r)
+void Cube::draw(Camera &camera,float x,float y,float z,float r)
 {
   glBindBuffer(GL_ARRAY_BUFFER,vbo);
   glBindVertexArray(vao);
+  glActiveTexture(GL_TEXTURE0);
   glUseProgram(shaderProgram);
     
   glm::mat4 model;
   model = glm::rotate(model, glm::radians(r), glm::vec3(0.0f, 0.0f, 1.0f));
-  
+  model = glm::rotate(model, glm::radians(r),glm::vec3(0.0f,1.0f,0.0f));
   GLint uniTrans = glGetUniformLocation(shaderProgram, "model");
   model = glm::translate(model,glm::vec3(x,y,z));
     glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(model));
     
-  glm::mat4 view = glm::lookAt(
-    glm::vec3(0.0f, 2.2f, 5.2f), // position
-    glm::vec3(0.0f, 0.0f, 0.0f), // camera center
-    glm::vec3(0.0f, 0.0f, 1.0f) // up axis
-    );
+   
   GLint uniView = glGetUniformLocation(shaderProgram, "view");
-  glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+  glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(camera.view));
 
-  glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 10.0f);
   GLint uniProj = glGetUniformLocation(shaderProgram, "proj");
-  glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
+  glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(camera.proj));
 
   
   glDrawArrays(GL_TRIANGLES, 0, 36); 

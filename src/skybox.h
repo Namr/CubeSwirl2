@@ -5,22 +5,24 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <stdio.h>
-#include <stdlib.h>
 
-#include "Camera.h"
+#include <stdio.h>
+#include <vector>
+#include <stdlib.h>
 
 using namespace std;
 
-class Cube
+class Skybox
 {
 private:
   GLuint vao;
   GLuint vbo;
   GLuint shaderProgram;
+  GLuint textures;
+  bool CompileSuccessful(int obj);
 public:
   GLuint load_shader(char *filepath, GLenum type);
-  void draw(Camera &camera,float x,float y,float z,float r);
-  void init();
+  GLuint loadCubemap(vector<const GLchar*> faces);
+  void draw();
+  void init();  
 };
-
