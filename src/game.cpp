@@ -53,7 +53,7 @@ int main()
   cam.view = glm::lookAt(
     glm::vec3(1.0f, 3.2f, 5.2f), // position
     glm::vec3(0.0f, 0.0f, 0.0f), // camera center
-    glm::vec3(0.0f, 0.0f, 1.0f) // up axis
+    glm::vec3(0.0f, 0.0f, -1.0f) // up axis
     );
   sky.init();
   cube.init();
@@ -65,16 +65,74 @@ int main()
   cube7.init();
   cube8.init();
   float t = 0;
+  float v = 0;
+  float d = 0.1;
+  float lastTime;
+  // Get mouse position
+  double xpos, ypos;
+  glm::vec3 position = glm::vec3( 0, 0, 5 );
+  float speed = 3.0f; // 3 units / second
+  float mouseSpeed = 0.03f;
+  float horizontalAngle = 3.14f;
+  float verticalAngle = 0.0f;
+  
   //main loop
   while(!glfwWindowShouldClose(window))
   {
     glfwSwapBuffers(window);
+    glfwPollEvents();
+
+    double currentTime = glfwGetTime();
+    float deltaTime = currentTime - lastTime;
+
+    glfwGetCursorPos(window,&xpos, &ypos);
+    glfwSetCursorPos(window,800/2, 600/2);
+    
+    horizontalAngle += mouseSpeed * deltaTime * float(800/2 - xpos );
+    verticalAngle   += mouseSpeed * deltaTime * float( 600/2 - ypos );
+
+    glm::vec3 direction(
+      cos(verticalAngle) * sin(horizontalAngle),
+      sin(verticalAngle),
+      cos(verticalAngle) * cos(horizontalAngle)
+      );
+
+    glm::vec3 right = glm::vec3(
+      sin(horizontalAngle - 3.14f/2.0f),
+      0,
+      cos(horizontalAngle - 3.14f/2.0f)
+      );
+    glm::vec3 up = glm::cross( right, direction );
+
+    if (glfwGetKey(window,GLFW_KEY_W ) == GLFW_PRESS){
+      position += direction * deltaTime * speed;
+    }
+    if (glfwGetKey(window,GLFW_KEY_S ) == GLFW_PRESS){
+      position -= direction * deltaTime * speed;
+    }
+    if (glfwGetKey(window,GLFW_KEY_D ) == GLFW_PRESS){
+      position += right * deltaTime * speed;
+    }
+    if (glfwGetKey(window,GLFW_KEY_A ) == GLFW_PRESS){
+      position -= right * deltaTime * speed;
+    }
+
+
+
+    cam.view = glm::lookAt(
+      position, // position
+      position+direction, // camera center
+      up // up axis
+    );
     //draw code
     // Clear the screen to black
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     t++;
-    sky.draw();
+    v += d;
+    if(v > 10 || v < -10)
+      d *= -1;
+    sky.draw(cam);
     cube.draw(cam,2.0f,0.0f,0.0f,t);
     cube2.draw(cam,0.0f,2.0f,0.0f,t);
     cube3.draw(cam,0.0,-2.0f,0.0f,t);
@@ -83,7 +141,7 @@ int main()
     cube6.draw(cam,-1.5f,1.5f,0.0f,t);
     cube7.draw(cam,1.5f,-1.5,0.0f,t);
     cube8.draw(cam,-1.5f,-1.5f,0.0f,t);
-    glfwPollEvents();
+    lastTime = currentTime;
   }
   
   glfwTerminate();

@@ -1,4 +1,6 @@
 #define GLEW_STATIC
+#ifndef CUBE_H
+#define CUBE_H
 #include <GL/glew.h>
 #include <SOIL/SOIL.h>
 
@@ -23,4 +25,4 @@ public:
   void draw(Camera &camera,float x,float y,float z,float r);
   void init();
 };
-
+#endif

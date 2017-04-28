@@ -113,22 +113,19 @@ void Cube::draw(Camera &camera,float x,float y,float z,float r)
   glBindVertexArray(vao);
   glActiveTexture(GL_TEXTURE0);
   glUseProgram(shaderProgram);
-    
   glm::mat4 model;
-  model = glm::rotate(model, glm::radians(r), glm::vec3(0.0f, 0.0f, 1.0f));
+  //model = glm::scale(model,glm::vec3(r/20,r/20,r/20));
   model = glm::rotate(model, glm::radians(r),glm::vec3(0.0f,1.0f,0.0f));
   GLint uniTrans = glGetUniformLocation(shaderProgram, "model");
   model = glm::translate(model,glm::vec3(x,y,z));
-    glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(model));
+  glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(model));
     
-   
   GLint uniView = glGetUniformLocation(shaderProgram, "view");
   glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(camera.view));
 
   GLint uniProj = glGetUniformLocation(shaderProgram, "proj");
   glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(camera.proj));
 
-  
   glDrawArrays(GL_TRIANGLES, 0, 36); 
 }
 

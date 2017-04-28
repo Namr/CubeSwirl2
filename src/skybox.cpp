@@ -1,6 +1,5 @@
 #include "skybox.h"
 
-
 GLfloat Skyvertices[] = {
     // Positions          
     -1.0f,  1.0f, -1.0f,
@@ -94,9 +93,9 @@ void Skybox::init()
   
 }
 
-void Skybox::draw()
+void Skybox::draw(Camera cam)
 {
-  glDepthMask(GL_FALSE);
+  glDepthFunc(GL_LEQUAL); 
   glBindBuffer(GL_ARRAY_BUFFER,vbo);
   glBindVertexArray(vao);
   glUseProgram(shaderProgram);
@@ -104,20 +103,16 @@ void Skybox::draw()
   glBindTexture(GL_TEXTURE_CUBE_MAP,textures);
   glUniform1i(glGetUniformLocation(shaderProgram, "skybox"), 3);  
   
-  glm::mat4 view = glm::lookAt(
-    glm::vec3(0.0f, 2.2f, 5.2f), // position
-    glm::vec3(0.0f, 0.0f, 0.0f), // camera center
-    glm::vec3(0.0f, 0.0f, 1.0f) // up axis
-    );
+  glm::mat4 view = glm::mat4(glm::mat3(cam.view));
+    
   GLint uniView = glGetUniformLocation(shaderProgram, "view");
   glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
 
-  glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 10.0f);
   GLint uniProj = glGetUniformLocation(shaderProgram, "proj");
-  glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
+  glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(cam.proj));
 
   glDrawArrays(GL_TRIANGLES, 0, 36);
-  glDepthMask(GL_TRUE);
+  glDepthFunc(GL_LEQUAL); 
 }
 
 GLuint Skybox::load_shader(char *filepath, GLenum type)

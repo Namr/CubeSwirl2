@@ -10,6 +10,8 @@
 #include <vector>
 #include <stdlib.h>
 
+#include "Camera.h"
+
 using namespace std;
 
 class Skybox
@@ -23,6 +25,6 @@ private:
 public:
   GLuint load_shader(char *filepath, GLenum type);
   GLuint loadCubemap(vector<const GLchar*> faces);
-  void draw();
+  void draw(Camera cam);
   void init();  
 };
